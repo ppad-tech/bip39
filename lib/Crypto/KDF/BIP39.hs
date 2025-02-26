@@ -26,6 +26,7 @@ fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
 
+-- remaining, bits pool, number of bits in pool
 type Acc = (BS.ByteString, Word64, Int)
 
 words :: BS.ByteString -> [BS.ByteString]
@@ -34,29 +35,32 @@ words bs = L.unfoldr coalg (bs, 0, 0) where
   coalg :: Acc -> Maybe (BS.ByteString, Acc)
   coalg (etc, acc, len)
     | len > 10 =
-        let w11  = fi ((acc .>>. (len - 11)) .&. mask)
-            nacc = acc .&. ((1 .<<. (len - 11)) - 1)
-            nlen = len - 11
+        let w11  = fi ((acc .>>. (len - 11)) .&. mask) -- take bits from pool
+            nacc = acc .&. ((1 .<<. (len - 11)) - 1)   -- adjust pool
+            nlen = len - 11                            -- track less bits
             word = PA.indexArray english w11
         in  Just (word, (etc, nacc, nlen))
     | not (BS.null etc) =
         let next = BU.unsafeHead etc
             rest = BU.unsafeTail etc
-            nacc = (acc .<<. 8) .|. fi next
-            nlen = len + 8
+            nacc = (acc .<<. 8) .|. fi next -- add bits to pool
+            nlen = len + 8                  -- track additional bits
         in  coalg (rest, nacc, nlen)
     | otherwise =
         Nothing
 
 mnemonic :: BS.ByteString -> Mnemonic
 mnemonic entropy@(BI.PS _ _ l)
+  | l `rem` 4 /= 0 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | l < 16 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | l > 32 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | otherwise =
-      let kek = BS.take (l `quot` 4) (SHA256.hash entropy)
-          cat = entropy <> kek
+      let has = SHA256.hash entropy
+          h   = BU.unsafeHead has
+          n   = l `quot` 4
+          kek = h .&. (0b1111_1111 .<<. (8 - n)) -- top n bits
+          cat = entropy <> BS.singleton kek
       in  Mnemonic (BS.intercalate " " (words cat))
-
 
 seed :: BS.ByteString -> BS.ByteString -> BS.ByteString
 seed mnem pass = PBKDF.derive SHA512.hmac mnem salt 2048 64 where
