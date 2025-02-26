@@ -46,6 +46,7 @@ test-suite bip39-tests
       base
     , array
     , bytestring
+    , ppad-base16
     , ppad-bip39
     , tasty
     , tasty-hunit

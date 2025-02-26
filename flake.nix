@@ -7,6 +7,12 @@
       url  = "git://git.ppad.tech/nixpkgs.git";
       ref  = "master";
     };
+    ppad-base16 = {
+      type = "git";
+      url  = "git://git.ppad.tech/base16.git";
+      ref  = "master";
+      inputs.ppad-nixpkgs.follows = "ppad-nixpkgs";
+    };
     ppad-sha256 = {
       type = "git";
       url  = "git://git.ppad.tech/sha256.git";
@@ -33,6 +39,7 @@
 
   outputs = { self, nixpkgs, flake-utils, ppad-nixpkgs
             , ppad-sha256, ppad-sha512
+            , ppad-base16
             , ppad-pbkdf
             }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -44,6 +51,7 @@
 
         hpkgs = pkgs.haskell.packages.ghc981.extend (new: old: {
           ${lib} = old.callCabal2nixWithOptions lib ./. "--enable-profiling" {};
+          ppad-base16 = ppad-base16.packages.${system}.default;
           ppad-sha256 = ppad-sha256.packages.${system}.default;
           ppad-sha512 = ppad-sha512.packages.${system}.default;
           ppad-pbkdf = ppad-pbkdf.packages.${system}.default;
