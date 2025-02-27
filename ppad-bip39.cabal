@@ -10,11 +10,10 @@ category:           Cryptography
 build-type:         Simple
 tested-with:        GHC == 9.8.1
 extra-doc-files:    CHANGELOG
+extra-source-files: etc/*txt
 description:
   [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
   mnemonic codes for deterministic key generation.
-
-  FIXME add extra src files for wordlists
 
 source-repository head
   type:     git
