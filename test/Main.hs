@@ -5,7 +5,6 @@ module Main where
 
 import qualified Crypto.HDKey.BIP32 as BIP32
 import qualified Crypto.KDF.BIP39 as BIP39
-import qualified Data.ByteString as BS
 import qualified Data.Aeson as A
 import qualified Data.Text.IO as TIO
 import Test.Tasty

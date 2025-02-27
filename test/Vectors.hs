@@ -12,7 +12,6 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Base16 as B16
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import Data.Word (Word32, Word64)
 import qualified Data.Vector as V
 
 data Vectors = Vectors {

@@ -2,7 +2,11 @@
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Crypto.KDF.BIP39 where
+module Crypto.KDF.BIP39 (
+    Mnemonic(..)
+  , mnemonic
+  , seed
+  ) where
 
 import qualified Crypto.KDF.PBKDF as PBKDF
 import qualified Crypto.Hash.SHA256 as SHA256
