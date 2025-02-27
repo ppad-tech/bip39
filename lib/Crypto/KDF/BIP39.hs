@@ -1,14 +1,26 @@
+{-# OPTIONS_HADDOCK prune #-}
 {-# LANGUAGE BinaryLiterals #-}
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+-- |
+-- Module: Crypto.HDKey.BIP32
+-- Copyright: (c) 2025 Jared Tobin
+-- License: MIT
+-- Maintainer: Jared Tobin <jared@ppad.tech>
+--
+-- [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+-- mnemonic codes for deterministic key generation, supporting wordlists in
+-- multiple languages.
+
 module Crypto.KDF.BIP39 (
-    Mnemonic(..)
-  , mnemonic
-  , _mnemonic
+  -- * Mnemonic and seed construction
+    mnemonic
   , seed
 
-  -- wordlists
+  -- * Alternative wordlists
+  , _mnemonic
+  , Wordlist(..)
   , english
   , chinese_traditional
   , chinese_simplified
@@ -37,19 +49,23 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.ICU.Normalize2 as ICU
 import System.IO.Unsafe (unsafePerformIO)
 
--- XX get rid of this type
-newtype Mnemonic = Mnemonic BS.ByteString
-  deriving Eq
-
-instance Show Mnemonic where
-  show (Mnemonic bs) = show bs
-
+-- | A BIP39 wordlist.
 newtype Wordlist = Wordlist (PA.Array T.Text)
 
 fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
 
+-- | Generate a BIP39 mnemonic from some entropy.
+--
+--   The entropy must be at least 128 bits long, at most 256 bits long,
+--   and its length must be a multiple of 32 bits. Providing invalid
+--   entropy will result in an 'ErrorCall' exception.
+--
+--   >>> import qualified System.Entropy as E
+--   >>> trop <- E.getEntropy 16
+--   >>> mnemonic trop
+--   "coral maze mimic half fat breeze thought club give brass bone snake"
 mnemonic :: BS.ByteString -> T.Text
 mnemonic = _mnemonic english
 
@@ -91,7 +107,12 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
         Nothing
 {-# INLINE words #-}
 
--- XX check that this is a valid mnemonic!
+-- | Derive a master seed from a provided mnemonic and passphrase.
+--
+--   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
+--   >>  let pass = "hunter2"
+--   >>> seed mnem pass
+--   <512-bit long seed>
 seed :: T.Text -> T.Text -> BS.ByteString
 seed mnem pass = PBKDF.derive SHA512.hmac bs salt 2048 64 where
   salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
