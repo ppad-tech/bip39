@@ -14,12 +14,17 @@
 -- multiple languages.
 
 module Crypto.KDF.BIP39 (
-  -- * Mnemonic and seed construction
+  -- * Mnemonic construction and validation
     mnemonic
-  , seed
-
-  -- * Alternative wordlists
   , _mnemonic
+  , valid
+  , _valid
+
+  -- * Seed derivation
+  , seed
+  , _seed
+
+  -- * Wordlists
   , Wordlist(..)
   , english
   , chinese_traditional
@@ -40,6 +45,8 @@ import Data.Bits ((.&.), (.|.), (.>>.), (.<<.))
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Internal as BI
 import qualified Data.ByteString.Unsafe as BU
+import qualified Data.Foldable as F
+import qualified Data.Maybe as M
 import qualified Data.Primitive.Array as PA
 import Data.Word (Word64)
 import qualified Data.List as L
@@ -56,7 +63,8 @@ fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
 
--- | Generate a BIP39 mnemonic from some entropy.
+-- | Generate a BIP39 mnemonic from some entropy, using the default English
+--   wordlist.
 --
 --   The entropy must be at least 128 bits long, at most 256 bits long,
 --   and its length must be a multiple of 32 bits. Providing invalid
@@ -69,9 +77,19 @@ fi = fromIntegral
 mnemonic :: BS.ByteString -> T.Text
 mnemonic = _mnemonic english
 
+-- | Generate a BIP39 mnemonic from some entropy, using the provided
+--   wordlist.
+--
+--   The entropy must be at least 128 bits long and at most 256 bits
+--   long. Providing invalid entropy will result in an 'ErrorCall'
+--   exception.
+--
+--   >>> import qualified System.Entropy as E
+--   >>> trop <- E.getEntropy 16
+--   >>> _mnemonic czech trop
+--   "naslepo lysina dikobraz slupka beseda rorejs ostraha kobliha napevno blahobyt kazivost jiskra"
 _mnemonic :: Wordlist -> BS.ByteString -> T.Text
 _mnemonic (Wordlist wlist) entropy@(BI.PS _ _ l)
-  | l `rem` 4 /= 0 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | l < 16 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | l > 32 = error "ppad-bip39 (mnemonic): invalid entropy length"
   | otherwise =
@@ -107,16 +125,78 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
         Nothing
 {-# INLINE words #-}
 
+-- | Validate a mnemonic against the default English wordlist.
+--
+--   Verifies that the mnemonic has a valid length, and that every word
+--   is contained in the wordlist.
+--
+--   >>> valid "coral maze mimic half fat breeze thought club give brass bone snake"
+--   True
+--   >>> valid "coral maze mimic half fat breeze thought club give brass bone"
+--   False
+valid :: T.Text -> Bool
+valid mnem =
+       length ws `elem` [12, 15, 18, 21, 24]
+    && all M.isJust (fmap (\word -> F.find (== word) wlist) ws)
+  where
+    ws = T.words mnem
+    Wordlist wlist = english
+
+-- | Validate a mnemonic against a wordlist.
+--
+--   Verifies that the mnemonic has a valid length, and that every word
+--   is contained in the provided wordlist.
+--
+--   >>> let mnem = "持 樓 粗 殺 承 圖 湧 整 拿 路 式 棋"
+--   >>> _valid chinese_traditional mnem
+--   True
+--   >>> _valid chinese_simplified mnem
+--   False
+_valid :: Wordlist -> T.Text -> Bool
+_valid (Wordlist wlist) mnem =
+       length ws `elem` [12, 15, 18, 21, 24]
+    && all M.isJust (fmap (\word -> F.find (== word) wlist) ws)
+  where
+    ws = T.words mnem
+
 -- | Derive a master seed from a provided mnemonic and passphrase.
+--
+--   The mnemonic's length is validated, but its individual words are
+--   /not/. If you want to validate the mnemonic's words against a
+--   wordlist, use '_seed'.
 --
 --   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
 --   >>  let pass = "hunter2"
 --   >>> seed mnem pass
 --   <512-bit long seed>
 seed :: T.Text -> T.Text -> BS.ByteString
-seed mnem pass = PBKDF.derive SHA512.hmac bs salt 2048 64 where
-  salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
-  bs = TE.encodeUtf8 (ICU.nfkd mnem)
+seed mnem pass
+  | length (T.words mnem) `notElem` [12, 15, 18, 21, 24] =
+      error "ppad-bip39 (seed): invalid mnemonic"
+  | otherwise =
+      let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
+          norm = TE.encodeUtf8 (ICU.nfkd mnem)
+      in  PBKDF.derive SHA512.hmac norm salt 2048 64 where
+
+-- | Derive a master seed from a provided mnemonic and passphrase, where the
+--   mnemonic has been generated from an arbitrary wordlist.
+--
+--   The provided mnemonic is checked for validity using '_valid'.
+--   Providing an invalid mnemonic will result in an 'ErrorCall'
+--   exception.
+--
+--   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
+--   >>  let pass = "hunter2"
+--   >>> _seed english mnem pass
+--   <512-bit long seed>
+_seed :: Wordlist -> T.Text -> T.Text -> BS.ByteString
+_seed wlist mnem pass
+  | not (_valid wlist mnem) =
+      error "ppad-bip39 (seed): invalid mnemonic"
+  | otherwise =
+      let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
+          norm = TE.encodeUtf8 (ICU.nfkd mnem)
+      in  PBKDF.derive SHA512.hmac norm salt 2048 64 where
 
 -- wordlists ------------------------------------------------------------------
 
