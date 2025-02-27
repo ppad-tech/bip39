@@ -27,13 +27,22 @@ data Wordlist =
 main :: IO ()
 main = do
   vectors_bip39 <- TIO.readFile "etc/vectors.json"
-  let vectors =
-        A.decodeStrictText vectors_bip39 :: Maybe V.Vectors
+  vectors_jp_bip39 <- TIO.readFile "etc/test_JP_BIP39.json"
+  let vectors = do
+        a <- A.decodeStrictText vectors_bip39 :: Maybe V.Vectors
+        b <- A.decodeStrictText vectors_jp_bip39 :: Maybe [V.JPBip39Test]
+        pure (a, b)
   case vectors of
     Nothing -> error "couldn't parse bip39 vectors"
-    Just vs -> defaultMain $ testGroup "ppad-bip39" [
-        bip39_tests vs
-      ]
+    Just (vs, js) -> defaultMain $
+      testGroup "ppad-bip39" [
+          bip39_tests vs
+        , jp_bip39_tests js
+        ]
+
+jp_bip39_tests :: [V.JPBip39Test] -> TestTree
+jp_bip39_tests jp_vectors =
+  testGroup "jp bip39 vectors" (fmap execute_jp jp_vectors)
 
 bip39_tests :: V.Vectors -> TestTree
 bip39_tests V.Vectors {..} =
@@ -95,3 +104,24 @@ execute wlist V.Bip39Test {..} = do
       Korean -> BIP39.korean
       Portuguese -> BIP39.portuguese
       Spanish -> BIP39.spanish
+
+execute_jp :: V.JPBip39Test -> TestTree
+execute_jp V.JPBip39Test {..} = do
+  let entr = jp_entropy
+      mnem = jp_mnemonic
+      pass = jp_passphrase
+      seed = jp_seed
+      xprv = jp_xprv
+      out_mnem = BIP39._mnemonic BIP39.japanese entr
+      giv_seed = BIP39.seed mnem pass
+      out_seed = BIP39.seed out_mnem pass
+      out_xprv = case BIP32.master out_seed of
+        Just hd -> BIP32.xprv hd
+        Nothing -> error "bang (bip32, jp)"
+  testGroup mempty [
+      testCase "mnemonic" $ assertEqual mempty (ICU.nfkd mnem) out_mnem
+    , testCase "seed (from given mnemonic)" $ assertEqual mempty seed giv_seed
+    , testCase "seed (from derived mnemonic)" $ assertEqual mempty seed out_seed
+    , testCase "xprv" $ assertEqual mempty xprv out_xprv
+    ]
+

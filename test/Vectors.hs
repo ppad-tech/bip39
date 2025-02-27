@@ -4,6 +4,7 @@
 module Vectors (
     Vectors(..)
   , Bip39Test(..)
+  , JPBip39Test(..)
   ) where
 
 import Data.Aeson ((.:))
@@ -67,4 +68,20 @@ instance A.FromJSON Bip39Test where
           A.String t -> TE.encodeUtf8 t
           _ -> error "bang (xprv)"
     in  pure Bip39Test {..}
+
+data JPBip39Test = JPBip39Test {
+    jp_entropy :: !BS.ByteString
+  , jp_mnemonic :: !T.Text
+  , jp_passphrase :: !T.Text
+  , jp_seed :: !BS.ByteString
+  , jp_xprv :: !BS.ByteString
+  } deriving Show
+
+instance A.FromJSON JPBip39Test where
+  parseJSON = A.withObject "JPBip39Test" $ \m -> JPBip39Test
+    <$> fmap decodehex (m .: "entropy")
+    <*> m .: "mnemonic"
+    <*> m .: "passphrase"
+    <*> fmap decodehex (m .: "seed")
+    <*> fmap TE.encodeUtf8 (m .: "bip32_xprv")
 
