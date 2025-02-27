@@ -15,7 +15,7 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Vector as V
 
 data Vectors = Vectors {
-  v_english               :: ![Bip39Test]
+    v_english             :: ![Bip39Test]
   , v_chinese_traditional :: ![Bip39Test]
   , v_chinese_simplified  :: ![Bip39Test]
   , v_french              :: ![Bip39Test]
@@ -42,7 +42,7 @@ instance A.FromJSON Vectors where
 
 data Bip39Test = Bip39Test {
     bt_entropy        :: !BS.ByteString
-  , bt_mnemonic       :: !BS.ByteString
+  , bt_mnemonic       :: !T.Text
   , bt_seed           :: !BS.ByteString
   , bt_xprv           :: !BS.ByteString
   } deriving Show
@@ -58,7 +58,7 @@ instance A.FromJSON Bip39Test where
           A.String t -> decodehex t
           _ -> error "bang (entropy)"
         bt_mnemonic = case m V.! 1 of
-          A.String t -> TE.encodeUtf8 t
+          A.String t -> t
           _ -> error "bang (mnemonic)"
         bt_seed = case m V.! 2 of
           A.String t -> decodehex t

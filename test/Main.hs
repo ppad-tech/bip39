@@ -6,6 +6,7 @@ module Main where
 import qualified Crypto.HDKey.BIP32 as BIP32
 import qualified Crypto.KDF.BIP39 as BIP39
 import qualified Data.Aeson as A
+import qualified Data.Text.ICU.Normalize2 as ICU
 import qualified Data.Text.IO as TIO
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -65,15 +66,21 @@ execute wlist V.Bip39Test {..} = do
         mnem = bt_mnemonic
         seed = bt_seed
         xprv = bt_xprv
-        BIP39.Mnemonic out_mnem = BIP39._mnemonic wl entr
+        out_mnem = BIP39._mnemonic wl entr
+        giv_seed = BIP39.seed mnem "TREZOR"
         out_seed = BIP39.seed out_mnem "TREZOR"
         out_xprv = case BIP32.master out_seed of
           Just hd -> BIP32.xprv hd
           Nothing -> error "bang (bip32)"
         t_msg = mempty
     testGroup t_msg [
-        testCase "mnemonic" $ assertEqual mempty mnem out_mnem
-      , testCase "seed" $ assertEqual mempty seed out_seed
+        -- we always output (NFKD) normalized UTF8, but test inputs may not be
+        -- normalized in this fashion
+        testCase "mnemonic" $ assertEqual mempty (ICU.nfkd mnem) out_mnem
+        -- testing from the given mnemonic ensures we're normalizing properly
+        -- before seed calculation
+      , testCase "seed (from given mnemonic)" $ assertEqual mempty seed giv_seed
+      , testCase "seed (from derived mnemonic)" $ assertEqual mempty seed out_seed
       , testCase "xprv" $ assertEqual mempty xprv out_xprv
       ]
   where
