@@ -14,6 +14,8 @@ description:
   [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
   mnemonic codes for deterministic key generation.
 
+  FIXME add extra src files for wordlists
+
 source-repository head
   type:     git
   location: git.ppad.tech/bip39.git
@@ -33,6 +35,7 @@ library
     , ppad-sha512
     , primitive
     , text
+    , text-icu
 
 test-suite bip39-tests
   type:                exitcode-stdio-1.0
@@ -56,6 +59,7 @@ test-suite bip39-tests
     , tasty
     , tasty-hunit
     , text
+    , text-icu
     , vector
 
 benchmark bip39-bench
