@@ -66,9 +66,9 @@ newtype Wordlist = Wordlist (PA.Array T.Text)
 -- | Generate a BIP39 mnemonic from some entropy, using the default English
 --   wordlist.
 --
---   The entropy must be at least 128 bits long, at most 256 bits long,
---   and its length must be a multiple of 32 bits. Providing invalid
---   entropy will result in an 'ErrorCall' exception.
+--   The entropy must be at least 128 bits long and at most 256 bits
+--   long. Providing invalid entropy will result in an 'ErrorCall'
+--   exception.
 --
 --   >>> import qualified System.Entropy as E
 --   >>> trop <- E.getEntropy 16
@@ -204,7 +204,7 @@ seed_unsafe mnem pass
 --   False
 valid
   :: T.Text -- ^ mnemonic
-  -> Bool   -- ^ true if valid
+  -> Bool   -- ^ 'True' if valid
 valid mnem =
        length ws `elem` [12, 15, 18, 21, 24]
     && all M.isJust (fmap (\word -> F.find (== word) wlist) ws)
@@ -225,7 +225,7 @@ valid mnem =
 _valid
   :: Wordlist
   -> T.Text   -- ^ mnemonic
-  -> Bool     -- ^ true if valid
+  -> Bool     -- ^ 'True' if valid
 _valid (Wordlist wlist) mnem =
        length ws `elem` [12, 15, 18, 21, 24]
     && all M.isJust (fmap (\word -> F.find (== word) wlist) ws)
