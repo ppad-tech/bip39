@@ -1,5 +1,10 @@
 # Changelog
 
+- 0.2.0 (2025-02-27)
+  * 'seed' now validates the words in the mnemonic supplied to it;
+    'seed_unsafe' has been added as a function that works for any
+    wordlist.
+
 - 0.1.1 (2025-02-27)
   * Include wordlists in generated Haddocks.
 
