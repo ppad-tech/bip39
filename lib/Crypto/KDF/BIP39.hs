@@ -1,4 +1,3 @@
-{-# OPTIONS_HADDOCK prune #-}
 {-# LANGUAGE BinaryLiterals #-}
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -56,12 +55,12 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.ICU.Normalize2 as ICU
 import System.IO.Unsafe (unsafePerformIO)
 
--- | A BIP39 wordlist.
-newtype Wordlist = Wordlist (PA.Array T.Text)
-
 fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
+
+-- | A BIP39 wordlist.
+newtype Wordlist = Wordlist (PA.Array T.Text)
 
 -- | Generate a BIP39 mnemonic from some entropy, using the default English
 --   wordlist.
