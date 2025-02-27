@@ -76,8 +76,8 @@ execute wlist V.Bip39Test {..} = do
         seed = bt_seed
         xprv = bt_xprv
         out_mnem = BIP39._mnemonic wl entr
-        giv_seed = BIP39.seed mnem "TREZOR"
-        out_seed = BIP39.seed out_mnem "TREZOR"
+        giv_seed = seed_fn mnem "TREZOR"
+        out_seed = seed_fn out_mnem "TREZOR"
         out_xprv = case BIP32.master out_seed of
           Just hd -> BIP32.xprv hd
           Nothing -> error "bang (bip32)"
@@ -93,6 +93,9 @@ execute wlist V.Bip39Test {..} = do
       , testCase "xprv" $ assertEqual mempty xprv out_xprv
       ]
   where
+    seed_fn = case wlist of
+      English -> BIP39.seed
+      _ -> BIP39.seed_unsafe
     wl = case wlist of
       English -> BIP39.english
       ChineseTraditional -> BIP39.chinese_traditional
@@ -113,8 +116,8 @@ execute_jp V.JPBip39Test {..} = do
       seed = jp_seed
       xprv = jp_xprv
       out_mnem = BIP39._mnemonic BIP39.japanese entr
-      giv_seed = BIP39.seed mnem pass
-      out_seed = BIP39.seed out_mnem pass
+      giv_seed = BIP39.seed_unsafe mnem pass
+      out_seed = BIP39.seed_unsafe out_mnem pass
       out_xprv = case BIP32.master out_seed of
         Just hd -> BIP32.xprv hd
         Nothing -> error "bang (bip32, jp)"
