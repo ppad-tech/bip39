@@ -59,8 +59,8 @@ garbage-collected language under an optimizing compiler such as GHC, in
 which strict constant-timeness can be [challenging to achieve][const].
 
 The implementation within passes the official [BIP39 test
-vectors](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#
-test-vectors) for every "default" wordlist, including the additional
+vectors](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#test-vectors)
+for every "default" wordlist, including the additional
 Japanese vectors with heavily-normalized passphrases.
 
 This library differs somewhat from most *ppad* libraries
