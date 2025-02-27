@@ -3,6 +3,7 @@
 
 module Main where
 
+import qualified Crypto.HDKey.BIP32 as BIP32
 import qualified Crypto.KDF.BIP39 as BIP39
 import qualified Data.ByteString as BS
 import qualified Data.Aeson as A
@@ -33,8 +34,14 @@ execute V.Bip39Test {..} = do
       mnem = bt_mnemonic
       seed = bt_seed
       xprv = bt_xprv
-      BIP39.Mnemonic out = BIP39.mnemonic entr
+      BIP39.Mnemonic out_mnem = BIP39.mnemonic entr
+      out_seed = BIP39.seed out_mnem "TREZOR"
+      out_xprv = case BIP32.master out_seed of
+        Just hd -> BIP32.xprv hd
+        Nothing -> error "bang (bip32)"
       t_msg = "mnemonic " <> show mnem
-  testCase t_msg $
-    assertEqual mempty mnem out
-
+  testGroup t_msg [
+      testCase "mnemonic" $ assertEqual mempty mnem out_mnem
+    , testCase "seed" $ assertEqual mempty seed out_seed
+    , testCase "xprv" $ assertEqual mempty xprv out_xprv
+    ]
