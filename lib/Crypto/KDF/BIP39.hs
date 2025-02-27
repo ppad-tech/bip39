@@ -92,9 +92,9 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
 {-# INLINE words #-}
 
 -- XX check that this is a valid mnemonic!
-seed :: T.Text -> BS.ByteString -> BS.ByteString
+seed :: T.Text -> T.Text -> BS.ByteString
 seed mnem pass = PBKDF.derive SHA512.hmac bs salt 2048 64 where
-  salt = "mnemonic" <> pass
+  salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
   bs = TE.encodeUtf8 (ICU.nfkd mnem)
 
 -- wordlists ------------------------------------------------------------------
