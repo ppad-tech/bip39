@@ -14,6 +14,14 @@ import qualified Vectors as V
 data Wordlist =
     English
   | ChineseTraditional
+  | ChineseSimplified
+  | Czech
+  | French
+  | Italian
+  | Japanese
+  | Korean
+  | Portuguese
+  | Spanish
 
 main :: IO ()
 main = do
@@ -33,6 +41,22 @@ bip39_tests V.Vectors {..} =
         (fmap (execute English) v_english)
     , testGroup "chinese_traditional"
         (fmap (execute ChineseTraditional) v_chinese_traditional)
+    , testGroup "chinese_simplified"
+        (fmap (execute ChineseSimplified) v_chinese_simplified)
+    , testGroup "french"
+        (fmap (execute French) v_french)
+    , testGroup "czech"
+        (fmap (execute Czech) v_czech)
+    , testGroup "italian"
+        (fmap (execute Italian) v_italian)
+    , testGroup "japanese"
+        (fmap (execute Japanese) v_japanese)
+    , testGroup "korean"
+        (fmap (execute Korean) v_korean)
+    , testGroup "portuguese"
+        (fmap (execute Portuguese) v_portuguese)
+    , testGroup "spanish"
+        (fmap (execute Spanish) v_spanish)
     ]
 
 execute :: Wordlist -> V.Bip39Test -> TestTree
@@ -46,7 +70,7 @@ execute wlist V.Bip39Test {..} = do
         out_xprv = case BIP32.master out_seed of
           Just hd -> BIP32.xprv hd
           Nothing -> error "bang (bip32)"
-        t_msg = "mnemonic " <> show mnem
+        t_msg = mempty
     testGroup t_msg [
         testCase "mnemonic" $ assertEqual mempty mnem out_mnem
       , testCase "seed" $ assertEqual mempty seed out_seed
@@ -56,3 +80,11 @@ execute wlist V.Bip39Test {..} = do
     wl = case wlist of
       English -> BIP39.english
       ChineseTraditional -> BIP39.chinese_traditional
+      ChineseSimplified -> BIP39.chinese_simplified
+      Czech -> BIP39.czech
+      French -> BIP39.french
+      Italian -> BIP39.italian
+      Japanese -> BIP39.japanese
+      Korean -> BIP39.korean
+      Portuguese -> BIP39.portuguese
+      Spanish -> BIP39.spanish

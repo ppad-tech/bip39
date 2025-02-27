@@ -15,14 +15,30 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Vector as V
 
 data Vectors = Vectors {
-    v_english :: ![Bip39Test]
+  v_english               :: ![Bip39Test]
   , v_chinese_traditional :: ![Bip39Test]
+  , v_chinese_simplified  :: ![Bip39Test]
+  , v_french              :: ![Bip39Test]
+  , v_spanish             :: ![Bip39Test]
+  , v_korean              :: ![Bip39Test]
+  , v_japanese            :: ![Bip39Test]
+  , v_portuguese          :: ![Bip39Test]
+  , v_czech               :: ![Bip39Test]
+  , v_italian             :: ![Bip39Test]
   } deriving Show
 
 instance A.FromJSON Vectors where
   parseJSON = A.withObject "Vectors" $ \m -> Vectors
     <$> m .: "english"
     <*> m .: "chinese_traditional"
+    <*> m .: "chinese_simplified"
+    <*> m .: "french"
+    <*> m .: "spanish"
+    <*> m .: "korean"
+    <*> m .: "japanese"
+    <*> m .: "portuguese"
+    <*> m .: "czech"
+    <*> m .: "italian"
 
 data Bip39Test = Bip39Test {
     bt_entropy        :: !BS.ByteString
