@@ -80,6 +80,30 @@ do in a future release.
 If you discover any vulnerabilities, please disclose them via
 security@ppad.tech.
 
+## Performance
+
+The aim is best-in-class performance for pure, highly-auditable Haskell
+code.
+
+Current benchmark figures on my mid-2020 MacBook Air look like (use
+`cabal bench` to run the benchmark suite):
+
+```
+  benchmarking ppad-bip39/mnemonic
+  time                 4.222 μs   (4.055 μs .. 4.380 μs)
+                       0.992 R²   (0.990 R² .. 0.995 R²)
+  mean                 4.220 μs   (4.118 μs .. 4.332 μs)
+  std dev              366.1 ns   (318.3 ns .. 427.9 ns)
+  variance introduced by outliers: 84% (severely inflated)
+
+  benchmarking ppad-bip39/seed
+  time                 12.91 ms   (12.64 ms .. 13.35 ms)
+                       0.994 R²   (0.989 R² .. 0.997 R²)
+  mean                 12.87 ms   (12.62 ms .. 13.16 ms)
+  std dev              699.8 μs   (568.8 μs .. 938.4 μs)
+  variance introduced by outliers: 25% (moderately inflated)
+```
+
 ## Development
 
 You'll require [Nix][nixos] with [flake][flake] support enabled. Enter a
