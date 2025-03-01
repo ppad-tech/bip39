@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/hackage/v/ppad-bip39?color=blue)](https://hackage.haskell.org/package/ppad-bip39)
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
+[![](https://img.shields.io/badge/haddock-bip39-lightblue)](https://docs.ppad.tech/bip39)
 
 An implementation of [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) mnemonics for deterministic key generation.
 
