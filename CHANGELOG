@@ -1,5 +1,8 @@
 # Changelog
 
+- 0.2.1 (2025-03-02)
+  * Various documentation improvements.
+
 - 0.2.0 (2025-02-27)
   * 'seed' now validates the words in the mnemonic supplied to it;
     'seed_unsafe' has been added as a function that works for any
