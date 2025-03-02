@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module: Crypto.HDKey.BIP32
+-- Module: Crypto.HDKey.BIP39
 -- Copyright: (c) 2025 Jared Tobin
 -- License: MIT
 -- Maintainer: Jared Tobin <jared@ppad.tech>
@@ -25,6 +25,8 @@ module Crypto.KDF.BIP39 (
   , seed_unsafe
 
   -- * Wordlists
+  --
+  -- $wordlists
   , Wordlist(..)
   , english
   , chinese_traditional
@@ -234,6 +236,19 @@ _valid (Wordlist wlist) mnem =
 
 -- wordlists ------------------------------------------------------------------
 
+-- $wordlists
+--
+-- Wordlists for various languages.
+--
+-- For the following examples:
+--
+-- >>> import qualified Data.Text.IO as TIO
+-- >>> let trop = "0123456789abcdef"
+
+-- | The default English wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic english trop
+--   coral maze mimic half fat breeze thought club give brass bone snake
 english :: Wordlist
 english = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/english.txt")
@@ -241,6 +256,10 @@ english = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE english #-}
 
+-- | The default Traditional Chinese wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic chinese_traditional trop
+--   持 樓 粗 殺 承 圖 湧 整 拿 路 式 棋
 chinese_traditional :: Wordlist
 chinese_traditional = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/chinese_traditional.txt")
@@ -248,6 +267,10 @@ chinese_traditional = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE chinese_traditional #-}
 
+-- | The default Simplified Chinese wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic chinese_simplified trop
+--   持 楼 粗 杀 承 图 涌 整 拿 路 式 棋
 chinese_simplified :: Wordlist
 chinese_simplified = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/chinese_simplified.txt")
@@ -255,6 +278,10 @@ chinese_simplified = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE chinese_simplified #-}
 
+-- | The default Korean wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic korean trop
+--   대문 어쩐지 여덟 설거지 볶음 그늘 태권도 단맛 상반기 균형 국왕 진출
 korean :: Wordlist
 korean = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/korean.txt")
@@ -262,6 +289,10 @@ korean = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE korean #-}
 
+-- | The default French wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic french trop
+--   chlorure kimono légume flamme endroit bénéfice soulever céleste falaise belette banlieue reprise
 french :: Wordlist
 french = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/french.txt")
@@ -269,6 +300,10 @@ french = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE french #-}
 
+-- | The default Spanish wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic spanish trop
+--   charla marido mente guía explicar banco tapa casco gemelo balcón ayuda ropa
 spanish :: Wordlist
 spanish = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/spanish.txt")
@@ -276,6 +311,10 @@ spanish = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE spanish #-}
 
+-- | The default Czech wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic czech trop
+--   hadr omladina oslepit metr krajina deflace varovat flirt lovec dechovka cudnost svitek
 czech :: Wordlist
 czech = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/czech.txt")
@@ -283,6 +322,10 @@ czech = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE czech #-}
 
+-- |  The default Italian wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic italian trop
+--   conferma nevrotico obbligo indole florido benigno svista cigno grotta belva barbaro sfocato
 italian :: Wordlist
 italian = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/italian.txt")
@@ -290,6 +333,10 @@ italian = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE italian #-}
 
+-- | The default Portuguese wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic portuguese trop
+--   capacho juba lareira figurado ejetar avaliar sonhador cachorro exposto autismo aterro refinar
 portuguese :: Wordlist
 portuguese = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/portuguese.txt")
@@ -297,6 +344,10 @@ portuguese = unsafePerformIO $ do
   pure (Wordlist (PA.arrayFromList ls))
 {-# NOINLINE portuguese #-}
 
+-- | The default Japanese wordlist.
+--
+--   >>> TIO.putStrLn $ _mnemonic japanese trop
+--   きおん たさい たまご しゃおん こふん えきたい ますく がはく しかい えおり うろこ ひとごみ
 japanese :: Wordlist
 japanese = unsafePerformIO $ do
   wlist <- fmap TE.decodeUtf8 (BS.readFile "etc/japanese.txt")
