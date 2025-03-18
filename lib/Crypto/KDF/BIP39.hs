@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module: Crypto.HDKey.BIP39
+-- Module: Crypto.KDF.BIP39
 -- Copyright: (c) 2025 Jared Tobin
 -- License: MIT
 -- Maintainer: Jared Tobin <jared@ppad.tech>
