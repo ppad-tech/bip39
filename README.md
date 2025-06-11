@@ -23,7 +23,7 @@ A sample GHCi session:
   > let trop = "my ultra secret entropy!"
   >
   > -- use 'mnemonic' to create a BIP39 mnemonic
-  > let mnem = mnemonic trop
+  > let Just mnem = mnemonic trop
   > mnem
   "hope simple bubble suggest elbow correct limb hole gloom nasty fringe dolphin finger demand situate unlock junior autumn"
   >

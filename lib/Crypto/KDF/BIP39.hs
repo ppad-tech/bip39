@@ -40,6 +40,7 @@ module Crypto.KDF.BIP39 (
   , spanish
   ) where
 
+import Control.Monad (guard)
 import qualified Crypto.KDF.PBKDF as PBKDF
 import qualified Crypto.Hash.SHA256 as SHA256
 import qualified Crypto.Hash.SHA512 as SHA512
@@ -69,8 +70,7 @@ newtype Wordlist = Wordlist (PA.Array T.Text)
 --   wordlist.
 --
 --   The entropy must be at least 128 bits long and at most 256 bits
---   long. Providing invalid entropy will result in an 'ErrorCall'
---   exception.
+--   long. Providing invalid entropy will result in a 'Nothing' value.
 --
 --   >>> import qualified System.Entropy as E
 --   >>> trop <- E.getEntropy 16
@@ -78,34 +78,32 @@ newtype Wordlist = Wordlist (PA.Array T.Text)
 --   "coral maze mimic half fat breeze thought club give brass bone snake"
 mnemonic
   :: BS.ByteString -- ^ 128-256 bits of entropy
-  -> T.Text
+  -> Maybe T.Text
 mnemonic = _mnemonic english
 
 -- | Generate a BIP39 mnemonic from some entropy, using the provided
 --   wordlist.
 --
 --   The entropy must be at least 128 bits long and at most 256 bits
---   long. Providing invalid entropy will result in an 'ErrorCall'
---   exception.
+--   long. Providing invalid entropy will result in a value of
+--   'Nothing'.
 --
 --   >>> import qualified System.Entropy as E
 --   >>> trop <- E.getEntropy 16
 --   >>> _mnemonic czech trop
---   "naslepo lysina dikobraz slupka beseda rorejs ostraha kobliha napevno blahobyt kazivost jiskra"
+--   Just "naslepo lysina dikobraz slupka beseda rorejs ostraha kobliha napevno blahobyt kazivost jiskra"
 _mnemonic
   :: Wordlist
   -> BS.ByteString -- ^ 128-256 bits of entropy
-  -> T.Text
-_mnemonic (Wordlist wlist) entropy@(BI.PS _ _ l)
-  | l < 16 = error "ppad-bip39 (mnemonic): invalid entropy length"
-  | l > 32 = error "ppad-bip39 (mnemonic): invalid entropy length"
-  | otherwise =
-      let has = SHA256.hash entropy
-          h   = BU.unsafeHead has
-          n   = l `quot` 4
-          kek = h .&. (0b1111_1111 .<<. (8 - n)) -- top n bits
-          cat = entropy <> BS.singleton kek
-      in  T.intercalate " " (words wlist cat)
+  -> Maybe T.Text
+_mnemonic (Wordlist wlist) entropy@(BI.PS _ _ l) = do
+  guard (l >= 16 && l <= 32)
+  let has = SHA256.hash entropy
+      h   = BU.unsafeHead has
+      n   = l `quot` 4
+      kek = h .&. (0b1111_1111 .<<. (8 - n)) -- top n bits
+      cat = entropy <> BS.singleton kek
+  pure $! T.intercalate " " (words wlist cat)
 {-# INLINE _mnemonic #-}
 
 -- remaining, bits pool, number of bits in pool
@@ -121,7 +119,7 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
             nacc = acc .&. ((1 .<<. (len - 11)) - 1)   -- adjust pool
             nlen = len - 11                            -- track less bits
             word = PA.indexArray wlist w11
-        in  Just (word, (etc, nacc, nlen))
+        in  pure (word, (etc, nacc, nlen))
     | not (BS.null etc) =
         let next = BU.unsafeHead etc
             rest = BU.unsafeTail etc
@@ -146,32 +144,29 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
 seed
   :: T.Text        -- ^ mnemonic
   -> T.Text        -- ^ passphrase (use e.g. "" or 'mempty' if not required)
-  -> BS.ByteString -- ^ seed
+  -> Maybe BS.ByteString -- ^ seed
 seed = _seed english
 
 -- | Derive a master seed from a provided mnemonic and passphrase, where the
 --   mnemonic has been generated from an arbitrary wordlist.
 --
 --   The provided mnemonic is checked for validity using '_valid'.
---   Providing an invalid mnemonic will result in an 'ErrorCall'
---   exception.
+--   Providing an invalid mnemonic will result in a 'Nothing' value.
 --
 --   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
 --   >>  let pass = "hunter2"
 --   >>> _seed english mnem pass
 --   <512-bit long seed>
 _seed
-  :: Wordlist      -- ^ wordlist
-  -> T.Text        -- ^ mnemonic
-  -> T.Text        -- ^ passphrase (use e.g. "" or 'mempty' if not required)
-  -> BS.ByteString -- ^ seed
-_seed wlist mnem pass
-  | not (_valid wlist mnem) =
-      error "ppad-bip39 (seed): invalid mnemonic"
-  | otherwise =
-      let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
-          norm = TE.encodeUtf8 (ICU.nfkd mnem)
-      in  PBKDF.derive SHA512.hmac norm salt 2048 64 where
+  :: Wordlist -- ^ wordlist
+  -> T.Text   -- ^ mnemonic
+  -> T.Text   -- ^ passphrase (use e.g. "" or 'mempty' if not required)
+  -> Maybe BS.ByteString -- ^ seed
+_seed wlist mnem pass = do
+  guard (_valid wlist mnem)
+  let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
+      norm = TE.encodeUtf8 (ICU.nfkd mnem)
+  pure $! PBKDF.derive SHA512.hmac norm salt 2048 64 where
 {-# INLINE _seed #-}
 
 -- | Derive a master seed from a provided mnemonic and passphrase.
@@ -186,14 +181,12 @@ _seed wlist mnem pass
 seed_unsafe
   :: T.Text        -- ^ mnemonic
   -> T.Text        -- ^ passphrase (use e.g. "" or 'mempty' if not required)
-  -> BS.ByteString -- ^ seed
-seed_unsafe mnem pass
-  | length (T.words mnem) `notElem` [12, 15, 18, 21, 24] =
-      error "ppad-bip39 (seed_unsafe): invalid mnemonic"
-  | otherwise =
-      let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
-          norm = TE.encodeUtf8 (ICU.nfkd mnem)
-      in  PBKDF.derive SHA512.hmac norm salt 2048 64 where
+  -> Maybe BS.ByteString -- ^ seed
+seed_unsafe mnem pass = do
+  guard (length (T.words mnem) `elem` [12, 15, 18, 21, 24])
+  let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
+      norm = TE.encodeUtf8 (ICU.nfkd mnem)
+  pure $! PBKDF.derive SHA512.hmac norm salt 2048 64 where
 
 -- | Validate a mnemonic against the default English wordlist.
 --
