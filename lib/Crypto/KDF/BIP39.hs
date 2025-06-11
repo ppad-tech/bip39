@@ -75,7 +75,7 @@ newtype Wordlist = Wordlist (PA.Array T.Text)
 --   >>> import qualified System.Entropy as E
 --   >>> trop <- E.getEntropy 16
 --   >>> mnemonic trop
---   "coral maze mimic half fat breeze thought club give brass bone snake"
+--   Just "coral maze mimic half fat breeze thought club give brass bone snake"
 mnemonic
   :: BS.ByteString -- ^ 128-256 bits of entropy
   -> Maybe T.Text
