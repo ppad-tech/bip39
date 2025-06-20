@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
@@ -6,7 +7,6 @@ module Main where
 import qualified Crypto.HDKey.BIP32 as BIP32
 import qualified Crypto.KDF.BIP39 as BIP39
 import qualified Data.Aeson as A
-import qualified Data.Maybe as M
 import qualified Data.Text.ICU.Normalize2 as ICU
 import qualified Data.Text.IO as TIO
 import Test.Tasty
@@ -76,12 +76,10 @@ execute wlist V.Bip39Test {..} = do
         mnem = bt_mnemonic
         seed = bt_seed
         xprv = bt_xprv
-        out_mnem = M.fromJust (BIP39._mnemonic wl entr)
-        giv_seed = M.fromJust (seed_fn mnem "TREZOR")
-        out_seed = M.fromJust (seed_fn out_mnem "TREZOR")
-        out_xprv = case BIP32.master out_seed of
-          Just hd -> BIP32.xprv hd
-          Nothing -> error "bang (bip32)"
+        Just out_mnem = BIP39._mnemonic wl entr
+        Just giv_seed = seed_fn mnem "TREZOR"
+        Just out_seed = seed_fn out_mnem "TREZOR"
+        Just out_xprv = BIP32.master out_seed >>= BIP32.xprv
         t_msg = mempty
     testGroup t_msg [
         -- we always output (NFKD) normalized UTF8, but test inputs may not be
@@ -116,12 +114,10 @@ execute_jp V.JPBip39Test {..} = do
       pass = jp_passphrase
       seed = jp_seed
       xprv = jp_xprv
-      out_mnem = M.fromJust (BIP39._mnemonic BIP39.japanese entr)
-      giv_seed = M.fromJust (BIP39.seed_unsafe mnem pass)
-      out_seed = M.fromJust (BIP39.seed_unsafe out_mnem pass)
-      out_xprv = case BIP32.master out_seed of
-        Just hd -> BIP32.xprv hd
-        Nothing -> error "bang (bip32, jp)"
+      Just out_mnem = BIP39._mnemonic BIP39.japanese entr
+      Just giv_seed = BIP39.seed_unsafe mnem pass
+      Just out_seed = BIP39.seed_unsafe out_mnem pass
+      Just out_xprv = BIP32.master out_seed >>= BIP32.xprv
   testGroup mempty [
       testCase "mnemonic" $ assertEqual mempty (ICU.nfkd mnem) out_mnem
     , testCase "seed (from given mnemonic)" $ assertEqual mempty seed giv_seed

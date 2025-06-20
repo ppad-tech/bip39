@@ -51,11 +51,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739979569,
-        "narHash": "sha256-omEcmgzRlzIE5Vdty0/SskEcR2f7OtcHzGFE4i1dI60=",
+        "lastModified": 1741625558,
+        "narHash": "sha256-ZBDXRD5fsVqA5bGrAlcnhiu67Eo50q0M9614nR3NBwY=",
         "ref": "master",
-        "rev": "4439e0efafbb5185bd7d9bfb352a17c2a31b96b4",
-        "revCount": 15,
+        "rev": "fb63457f2e894eda28250dfe65d0fcd1d195ac2f",
+        "revCount": 24,
         "type": "git",
         "url": "git://git.ppad.tech/base16.git"
       },
@@ -123,11 +123,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739979602,
-        "narHash": "sha256-RrhqNPuDmKo1mG0Y2ZyaeuMuCjtIhGLLO87TaJeEDZI=",
+        "lastModified": 1750335817,
+        "narHash": "sha256-XReE3NMudmbpWgvMGwvsMt5SO3DkKYFYVLvsh5waDRg=",
         "ref": "master",
-        "rev": "40e80c1b2c39c829976aab44f6d318ebe4e2e784",
-        "revCount": 22,
+        "rev": "10c667ad8dc7583407fd1545259dc140497e2b17",
+        "revCount": 27,
         "type": "git",
         "url": "git://git.ppad.tech/base58.git"
       },
@@ -166,11 +166,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1740292997,
-        "narHash": "sha256-EOmvT1aBIVfSlleDn1Qg219rF6FgHovu/ZWGgfcYfqc=",
+        "lastModified": 1750423628,
+        "narHash": "sha256-HF7jKLvMGhCp4GCpHb7q+69zZu6VfE1Bu8cNJQpig5k=",
         "ref": "master",
-        "rev": "ce0978beadab34fd1103287a99c1e3f335f5f58a",
-        "revCount": 37,
+        "rev": "d4b9d2f26e19416e1153571e449321ac5d62c939",
+        "revCount": 45,
         "type": "git",
         "url": "git://git.ppad.tech/bip32.git"
       },
@@ -271,11 +271,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1740456623,
-        "narHash": "sha256-s29IVCEZMOhlq56Z4DAq+2UX8yYn/f+n3mIQMTGbuaQ=",
+        "lastModified": 1749628166,
+        "narHash": "sha256-zjZqto6oVW/Zcc0hYkup2mzEV27k+Y7dZUezAaqTp9E=",
         "ref": "master",
-        "rev": "d249a794ca47cb4e3abe494dcde80767d84b8632",
-        "revCount": 12,
+        "rev": "93af1a1af0ed7731c953ef4c415f05c1401bc094",
+        "revCount": 14,
         "type": "git",
         "url": "git://git.ppad.tech/pbkdf.git"
       },
@@ -305,11 +305,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1738846817,
-        "narHash": "sha256-mjefp2TM88Psw8moP0ioHHaYOrG0n8jEN1d5hjvTE6k=",
+        "lastModified": 1740802961,
+        "narHash": "sha256-sEW9RGhoWs8BmsQ+FHowMaWgSEjJc68qB7Bg33c0yKw=",
         "ref": "master",
-        "rev": "d46ac86d87779e651b7a1d2f36ca03beaa08574d",
-        "revCount": 22,
+        "rev": "d703a7a58bad51f8271cfb9b1731e37c05202eeb",
+        "revCount": 26,
         "type": "git",
         "url": "git://git.ppad.tech/ripemd160.git"
       },
@@ -348,11 +348,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739709462,
-        "narHash": "sha256-bgdKy8Cx67DeNxIANAxFnelovj2LP4opaprkWp5KwA4=",
+        "lastModified": 1750336608,
+        "narHash": "sha256-hNTKr/dkUjiWkqg0qzCl+hVrY51Xc6lkmC3QnpBs5cg=",
         "ref": "master",
-        "rev": "0c075b2ca6b95f98924fa76b278402f089e33f71",
-        "revCount": 138,
+        "rev": "0216aa125e71d3e23f890084bb80345a7cb13e2f",
+        "revCount": 171,
         "type": "git",
         "url": "git://git.ppad.tech/secp256k1.git"
       },
@@ -379,11 +379,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739979751,
-        "narHash": "sha256-FSU4s+TtpqdrWn9DYmFprSnlD6pEcVQmsPX+m8oadvo=",
+        "lastModified": 1740802974,
+        "narHash": "sha256-GTD9UrxwMa5zY7hxzDSXjKXKUwMK4r3FBHLG0nvgapk=",
         "ref": "master",
-        "rev": "a0e34487f0c025fac1addf72b96498e6084e4e8f",
-        "revCount": 93,
+        "rev": "ab0957e305dff0243dcab11e381470585849fd20",
+        "revCount": 94,
         "type": "git",
         "url": "git://git.ppad.tech/sha256.git"
       },
@@ -410,11 +410,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1738754198,
-        "narHash": "sha256-6XuhiWKKAfplrLM7kKBrmkbaJ7hKzqpzV6fnHKqO2xA=",
+        "lastModified": 1740802979,
+        "narHash": "sha256-6VAXmA1XiIT/WFcP+eFb6uK3YyfgVqIgDv3ASNIoCMs=",
         "ref": "master",
-        "rev": "2b2fb3318127985b8eb8f361d6d8cbb86f08b2ed",
-        "revCount": 25,
+        "rev": "ff165b29fb21b99749460ae7e3fdca42a85c822b",
+        "revCount": 28,
         "type": "git",
         "url": "git://git.ppad.tech/sha512.git"
       },

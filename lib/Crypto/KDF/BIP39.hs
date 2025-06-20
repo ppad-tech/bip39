@@ -166,7 +166,7 @@ _seed wlist mnem pass = do
   guard (_valid wlist mnem)
   let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
       norm = TE.encodeUtf8 (ICU.nfkd mnem)
-  pure $! PBKDF.derive SHA512.hmac norm salt 2048 64 where
+  PBKDF.derive SHA512.hmac norm salt 2048 64
 {-# INLINE _seed #-}
 
 -- | Derive a master seed from a provided mnemonic and passphrase.
@@ -186,7 +186,7 @@ seed_unsafe mnem pass = do
   guard (length (T.words mnem) `elem` [12, 15, 18, 21, 24])
   let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
       norm = TE.encodeUtf8 (ICU.nfkd mnem)
-  pure $! PBKDF.derive SHA512.hmac norm salt 2048 64 where
+  PBKDF.derive SHA512.hmac norm salt 2048 64
 
 -- | Validate a mnemonic against the default English wordlist.
 --
