@@ -140,7 +140,7 @@ words wlist bs = L.unfoldr coalg (bs, 0, 0) where
 --   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
 --   >>  let pass = "hunter2"
 --   >>> seed mnem pass
---   <512-bit long seed>
+--   Just <512-bit long seed>
 seed
   :: T.Text        -- ^ mnemonic
   -> T.Text        -- ^ passphrase (use e.g. "" or 'mempty' if not required)
@@ -156,7 +156,7 @@ seed = _seed english
 --   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
 --   >>  let pass = "hunter2"
 --   >>> _seed english mnem pass
---   <512-bit long seed>
+--   Just <512-bit long seed>
 _seed
   :: Wordlist -- ^ wordlist
   -> T.Text   -- ^ mnemonic
@@ -177,7 +177,7 @@ _seed wlist mnem pass = do
 --   >>> let mnem = "coral maze mimic half fat breeze thought club give brass bone snake"
 --   >>  let pass = "hunter2"
 --   >>> seed_unsafe mnem pass
---   <512-bit long seed>
+--   Just <512-bit long seed>
 seed_unsafe
   :: T.Text        -- ^ mnemonic
   -> T.Text        -- ^ passphrase (use e.g. "" or 'mempty' if not required)

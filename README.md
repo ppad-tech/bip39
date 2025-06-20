@@ -86,23 +86,21 @@ security@ppad.tech.
 The aim is best-in-class performance for pure, highly-auditable Haskell
 code.
 
-Current benchmark figures on my mid-2020 MacBook Air look like (use
+Current benchmark figures on an M4 Silicon MacBook Air look like (use
 `cabal bench` to run the benchmark suite):
 
 ```
   benchmarking ppad-bip39/mnemonic
-  time                 4.222 μs   (4.055 μs .. 4.380 μs)
-                       0.992 R²   (0.990 R² .. 0.995 R²)
-  mean                 4.220 μs   (4.118 μs .. 4.332 μs)
-  std dev              366.1 ns   (318.3 ns .. 427.9 ns)
-  variance introduced by outliers: 84% (severely inflated)
+  time                 1.986 μs   (1.982 μs .. 1.988 μs)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 1.973 μs   (1.969 μs .. 1.978 μs)
+  std dev              13.61 ns   (12.14 ns .. 15.64 ns)
 
   benchmarking ppad-bip39/seed
-  time                 12.91 ms   (12.64 ms .. 13.35 ms)
-                       0.994 R²   (0.989 R² .. 0.997 R²)
-  mean                 12.87 ms   (12.62 ms .. 13.16 ms)
-  std dev              699.8 μs   (568.8 μs .. 938.4 μs)
-  variance introduced by outliers: 25% (moderately inflated)
+  time                 7.017 ms   (7.008 ms .. 7.027 ms)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 7.010 ms   (7.006 ms .. 7.015 ms)
+  std dev              13.95 μs   (11.37 μs .. 18.55 μs)
 ```
 
 ## Development
