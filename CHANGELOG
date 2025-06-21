@@ -1,5 +1,9 @@
 # Changelog
 
+- 0.3.0 (2025-06-21)
+  * The 'mnemonic' and 'seed' function families are now total, returning
+    'Nothing' when supplied with bad inputs.
+
 - 0.2.1 (2025-03-02)
   * Various documentation improvements.
 

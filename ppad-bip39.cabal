@@ -1,6 +1,6 @@
 cabal-version:      3.0
 name:               ppad-bip39
-version:            0.2.1
+version:            0.3.0
 synopsis:           BIP39 mnemonic codes.
 license:            MIT
 license-file:       LICENSE
@@ -40,7 +40,7 @@ library
   build-depends:
       base >= 4.9 && < 5
     , bytestring >= 0.9 && < 0.13
-    , ppad-pbkdf >= 0.1 && < 0.2
+    , ppad-pbkdf >= 0.2 && < 0.3
     , ppad-sha256 >= 0.2.3 && < 0.3
     , ppad-sha512 >= 0.1.3 && < 0.2
     , primitive >= 0.8 && < 0.10
