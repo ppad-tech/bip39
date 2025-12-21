@@ -26,6 +26,11 @@ description:
   [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
   mnemonic codes for deterministic key generation.
 
+flag llvm
+  description: Use GHC's LLVM backend.
+  default:     False
+  manual:      True
+
 source-repository head
   type:     git
   location: git.ppad.tech/bip39.git
@@ -35,6 +40,8 @@ library
   hs-source-dirs:   lib
   ghc-options:
       -Wall
+  if flag(llvm)
+    ghc-options: -fllvm -O2
   exposed-modules:
       Crypto.KDF.BIP39
   build-depends:

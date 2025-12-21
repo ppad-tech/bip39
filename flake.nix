@@ -27,12 +27,14 @@
       url  = "git://git.ppad.tech/sha256.git";
       ref  = "master";
       inputs.ppad-nixpkgs.follows = "ppad-nixpkgs";
+      inputs.ppad-base16.follows = "ppad-base16";
     };
     ppad-sha512 = {
       type = "git";
       url  = "git://git.ppad.tech/sha512.git";
       ref  = "master";
       inputs.ppad-nixpkgs.follows = "ppad-nixpkgs";
+      inputs.ppad-base16.follows = "ppad-base16";
     };
     ppad-pbkdf = {
       type = "git";
@@ -58,10 +60,17 @@
 
         pkgs = import nixpkgs { inherit system; };
         hlib = pkgs.haskell.lib;
+        llvm = pkgs.llvmPackages_15.llvm;
+
+        bip32 = ppad-bip32.packages.${system}.default;
+        bip32-llvm =
+          hlib.addBuildTools
+            (hlib.enableCabalFlag bip32 "llvm")
+            [ llvm ];
 
         hpkgs = pkgs.haskell.packages.ghc981.extend (new: old: {
           ${lib} = old.callCabal2nixWithOptions lib ./. "--enable-profiling" {};
-          ppad-bip32 = ppad-bip32.packages.${system}.default;
+          ppad-bip32 = bip32-llvm;
           ppad-base16 = ppad-base16.packages.${system}.default;
           ppad-sha256 = ppad-sha256.packages.${system}.default;
           ppad-sha512 = ppad-sha512.packages.${system}.default;
@@ -83,9 +92,8 @@
             buildInputs = [
               cabal
               cc
+              llvm
             ];
-
-            inputsFrom = builtins.attrValues self.packages.${system};
 
             doBenchmark = true;
 
@@ -95,6 +103,7 @@
               echo "cc:    $(${cc}/bin/cc --version)"
               echo "ghc:   $(${ghc}/bin/ghc --version)"
               echo "cabal: $(${cabal}/bin/cabal --version)"
+              echo "llc:   $(${llvm}/bin/llc --version | head -2 | tail -1)"
             '';
           };
         }
