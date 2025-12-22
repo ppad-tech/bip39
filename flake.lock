@@ -124,6 +124,7 @@
         ],
         "ppad-base58": "ppad-base58",
         "ppad-fixed": "ppad-fixed",
+        "ppad-hmac-drbg": "ppad-hmac-drbg",
         "ppad-nixpkgs": [
           "ppad-nixpkgs"
         ],
@@ -137,11 +138,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1766437840,
-        "narHash": "sha256-VfzKdpkxgFcikXfgLg4HMReXJ5NF2XXf0yOQl5awTnY=",
+        "lastModified": 1766444914,
+        "narHash": "sha256-ZJIvRFhp7TQJZ/xWLoIJWthgA7xsZo314y4XdPalktM=",
         "ref": "master",
-        "rev": "948c5e477175306875a5227cfde64bdc0365c739",
-        "revCount": 55,
+        "rev": "52d65e28f3eb3cb295bc0b957030d9574ddd2bdd",
+        "revCount": 56,
         "type": "git",
         "url": "git://git.ppad.tech/bip32.git"
       },
@@ -189,36 +190,30 @@
       "inputs": {
         "flake-utils": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-hmac-drbg",
           "ppad-nixpkgs",
           "flake-utils"
         ],
         "nixpkgs": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-hmac-drbg",
           "ppad-nixpkgs",
           "nixpkgs"
         ],
         "ppad-base16": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-base16"
         ],
         "ppad-nixpkgs": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-nixpkgs"
         ],
         "ppad-sha256": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-sha256"
         ],
         "ppad-sha512": [
           "ppad-bip32",
-          "ppad-secp256k1",
           "ppad-sha512"
         ]
       },
@@ -357,7 +352,10 @@
           "ppad-bip32",
           "ppad-fixed"
         ],
-        "ppad-hmac-drbg": "ppad-hmac-drbg",
+        "ppad-hmac-drbg": [
+          "ppad-bip32",
+          "ppad-hmac-drbg"
+        ],
         "ppad-nixpkgs": [
           "ppad-bip32",
           "ppad-nixpkgs"
