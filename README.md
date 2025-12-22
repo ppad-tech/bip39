@@ -91,16 +91,16 @@ Current benchmark figures on an M4 Silicon MacBook Air look like (use
 
 ```
   benchmarking ppad-bip39/mnemonic
-  time                 1.986 μs   (1.982 μs .. 1.988 μs)
+  time                 1.276 μs   (1.273 μs .. 1.281 μs)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 1.973 μs   (1.969 μs .. 1.978 μs)
-  std dev              13.61 ns   (12.14 ns .. 15.64 ns)
+  mean                 1.275 μs   (1.273 μs .. 1.278 μs)
+  std dev              8.396 ns   (4.677 ns .. 15.17 ns)
 
   benchmarking ppad-bip39/seed
-  time                 7.017 ms   (7.008 ms .. 7.027 ms)
+  time                 2.764 ms   (2.753 ms .. 2.773 ms)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 7.010 ms   (7.006 ms .. 7.015 ms)
-  std dev              13.95 μs   (11.37 μs .. 18.55 μs)
+  mean                 2.752 ms   (2.747 ms .. 2.758 ms)
+  std dev              17.73 μs   (13.66 μs .. 26.18 μs)
 ```
 
 ## Development
