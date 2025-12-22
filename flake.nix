@@ -41,6 +41,7 @@
       url  = "git://git.ppad.tech/pbkdf.git";
       ref  = "master";
       inputs.ppad-nixpkgs.follows = "ppad-nixpkgs";
+      inputs.ppad-base16.follows = "ppad-base16";
       inputs.ppad-sha256.follows = "ppad-sha256";
       inputs.ppad-sha512.follows = "ppad-sha512";
     };
@@ -68,13 +69,37 @@
             (hlib.enableCabalFlag bip32 "llvm")
             [ llvm ];
 
+        sha256 = ppad-sha256.packages.${system}.default;
+        sha256-llvm =
+          hlib.addBuildTools
+            (hlib.enableCabalFlag sha256 "llvm")
+            [ llvm ];
+
+        sha512 = ppad-sha512.packages.${system}.default;
+        sha512-llvm =
+          hlib.addBuildTools
+            (hlib.enableCabalFlag sha512 "llvm")
+            [ llvm ];
+
+        pbkdf = ppad-pbkdf.packages.${system}.default;
+        pbkdf-llvm =
+          hlib.addBuildTools
+            (hlib.enableCabalFlag pbkdf "llvm")
+            [ llvm ];
+
         hpkgs = pkgs.haskell.packages.ghc981.extend (new: old: {
-          ${lib} = old.callCabal2nixWithOptions lib ./. "--enable-profiling" {};
           ppad-bip32 = bip32-llvm;
           ppad-base16 = ppad-base16.packages.${system}.default;
-          ppad-sha256 = ppad-sha256.packages.${system}.default;
-          ppad-sha512 = ppad-sha512.packages.${system}.default;
-          ppad-pbkdf = ppad-pbkdf.packages.${system}.default;
+          ppad-sha256 = sha256-llvm;
+          ppad-sha512 = sha512-llvm;
+          ppad-pbkdf = pbkdf-llvm;
+          ${lib} = new.callCabal2nixWithOptions lib ./. "--enable-profiling" {
+            ppad-bip32 = new.ppad-bip32;
+            ppad-base16 = new.ppad-base16;
+            ppad-sha256 = new.ppad-sha256;
+            ppad-sha512 = new.ppad-sha512;
+            ppad-pbkdf = new.ppad-pbkdf;
+          };
         });
 
         cc    = pkgs.stdenv.cc;
