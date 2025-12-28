@@ -61,7 +61,7 @@
 
         pkgs = import nixpkgs { inherit system; };
         hlib = pkgs.haskell.lib;
-        llvm = pkgs.llvmPackages_15.llvm;
+        llvm = pkgs.llvmPackages_19.llvm;
 
         bip32 = ppad-bip32.packages.${system}.default;
         bip32-llvm =
@@ -87,7 +87,7 @@
             (hlib.enableCabalFlag pbkdf "llvm")
             [ llvm ];
 
-        hpkgs = pkgs.haskell.packages.ghc981.extend (new: old: {
+        hpkgs = pkgs.haskell.packages.ghc910.extend (new: old: {
           ppad-bip32 = bip32-llvm;
           ppad-base16 = ppad-base16.packages.${system}.default;
           ppad-sha256 = sha256-llvm;
