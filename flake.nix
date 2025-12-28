@@ -60,32 +60,33 @@
         lib = "ppad-bip39";
 
         pkgs = import nixpkgs { inherit system; };
-        hlib = pkgs.haskell.lib;
-        llvm = pkgs.llvmPackages_19.llvm;
+        hlib  = pkgs.haskell.lib;
+        llvm  = pkgs.llvmPackages_19.llvm;
+        clang = pkgs.llvmPackages_19.clang;
 
         bip32 = ppad-bip32.packages.${system}.default;
         bip32-llvm =
           hlib.addBuildTools
             (hlib.enableCabalFlag bip32 "llvm")
-            [ llvm ];
+            [ llvm clang ];
 
         sha256 = ppad-sha256.packages.${system}.default;
         sha256-llvm =
           hlib.addBuildTools
             (hlib.enableCabalFlag sha256 "llvm")
-            [ llvm ];
+            [ llvm clang ];
 
         sha512 = ppad-sha512.packages.${system}.default;
         sha512-llvm =
           hlib.addBuildTools
             (hlib.enableCabalFlag sha512 "llvm")
-            [ llvm ];
+            [ llvm clang ];
 
         pbkdf = ppad-pbkdf.packages.${system}.default;
         pbkdf-llvm =
           hlib.addBuildTools
             (hlib.enableCabalFlag pbkdf "llvm")
-            [ llvm ];
+            [ llvm clang ];
 
         hpkgs = pkgs.haskell.packages.ghc910.extend (new: old: {
           ppad-bip32 = bip32-llvm;
