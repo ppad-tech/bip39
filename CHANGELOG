@@ -1,5 +1,8 @@
 # Changelog
 
+- 0.3.2 (2026-01-10)
+  * Bumps some dependency lower bounds.
+
 - 0.3.1 (2025-12-28)
   * Bumps some dependency lower bounds.
   * Adds an 'llvm' build flag and tests with GHC 9.10.3.
