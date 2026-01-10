@@ -63,6 +63,11 @@ fi :: (Integral a, Num b) => a -> b
 fi = fromIntegral
 {-# INLINE fi #-}
 
+hmac_sha512 :: BS.ByteString -> BS.ByteString -> BS.ByteString
+hmac_sha512 k b = case SHA512.hmac k b of
+  SHA512.MAC mac -> mac
+{-# INLINE hmac_sha512 #-}
+
 -- | A BIP39 wordlist.
 newtype Wordlist = Wordlist (PA.Array T.Text)
 
@@ -166,7 +171,7 @@ _seed wlist mnem pass = do
   guard (_valid wlist mnem)
   let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
       norm = TE.encodeUtf8 (ICU.nfkd mnem)
-  PBKDF.derive SHA512.hmac norm salt 2048 64
+  PBKDF.derive hmac_sha512 norm salt 2048 64
 {-# INLINE _seed #-}
 
 -- | Derive a master seed from a provided mnemonic and passphrase.
@@ -186,7 +191,7 @@ seed_unsafe mnem pass = do
   guard (length (T.words mnem) `elem` [12, 15, 18, 21, 24])
   let salt = TE.encodeUtf8 ("mnemonic" <> ICU.nfkd pass)
       norm = TE.encodeUtf8 (ICU.nfkd mnem)
-  PBKDF.derive SHA512.hmac norm salt 2048 64
+  PBKDF.derive hmac_sha512 norm salt 2048 64
 
 -- | Validate a mnemonic against the default English wordlist.
 --
